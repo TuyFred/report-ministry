@@ -1,0 +1,39 @@
+{
+  "name": "ministry-report-backend",
+  "version": "1.0.0",
+  "description": "Ministry Report System - Backend for cPanel",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "start:production": "NODE_ENV=production node index.js",
+    "pm2:start": "pm2 start ecosystem.config.js --env production",
+    "pm2:stop": "pm2 stop ministry-report-backend",
+    "pm2:restart": "pm2 restart ministry-report-backend",
+    "pm2:logs": "pm2 logs ministry-report-backend",
+    "pm2:monit": "pm2 monit",
+    "seed:admin": "node seed-admin.js"
+  },
+  "keywords": ["ministry", "reports", "cpanel"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.1692.0",
+    "axios": "^1.13.2",
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "exceljs": "^4.4.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^2.0.2",
+    "multer-s3": "^3.0.1",
+    "mysql2": "^3.11.5",
+    "pdfkit": "^0.17.2",
+    "sequelize": "^6.37.7"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
