@@ -56,6 +56,15 @@ if (process.env.DATABASE_URL) {
     );
 }
 
+// Production Postgres (Render/Supabase) uses quoted PascalCase table names
+const isPostgres = !!(process.env.DATABASE_URL);
+const tableNames = {
+    users: isPostgres ? 'Users' : 'users',
+    reports: isPostgres ? 'Reports' : 'reports',
+    attachments: isPostgres ? 'Attachments' : 'attachments',
+    reportFormTemplate: isPostgres ? 'ReportFormTemplates' : 'ReportFormTemplate'
+};
+
 const connectDB = async () => {
     try {
         await sequelize.authenticate();
@@ -74,4 +83,4 @@ const connectDB = async () => {
     }
 };
 
-module.exports = { sequelize, connectDB };
+module.exports = { sequelize, connectDB, tableNames };

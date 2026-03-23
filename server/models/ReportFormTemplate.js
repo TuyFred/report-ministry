@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const { sequelize } = require('../config/db');
+const { sequelize, tableNames } = require('../config/db');
 
 const ReportFormTemplate = sequelize.define('ReportFormTemplate', {
     id: {
@@ -22,6 +22,7 @@ const ReportFormTemplate = sequelize.define('ReportFormTemplate', {
         defaultValue: false
     }
 }, {
+    tableName: tableNames.reportFormTemplate,
     timestamps: true
 });
 

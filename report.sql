@@ -20,42 +20,9 @@ SET time_zone = "+00:00";
 --
 -- Database: `report`
 --
-
-DELIMITER $$
---
--- Procedures
---
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_system_stats` (IN `p_start_date` DATE, IN `p_end_date` DATE)  BEGIN
-  SELECT 
-    COUNT(DISTINCT user_id) as active_users,
-    COUNT(*) as total_reports,
-    SUM(worship_time) as total_worship,
-    SUM(bible_reading_time) as total_bible_reading,
-    SUM(newcomers) as total_newcomers,
-    AVG(worship_time) as avg_worship,
-    AVG(bible_reading_time) as avg_bible_reading
-  FROM reports
-  WHERE date BETWEEN p_start_date AND p_end_date;
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_user_reports_stats` (IN `p_user_id` VARCHAR(36), IN `p_start_date` DATE, IN `p_end_date` DATE)  BEGIN
-  SELECT 
-    COUNT(*) as total_reports,
-    SUM(worship_time) as total_worship,
-    SUM(bible_reading_time) as total_bible_reading,
-    SUM(prayer_time) as total_prayer,
-    SUM(newcomers) as total_newcomers,
-    AVG(worship_time) as avg_worship,
-    AVG(bible_reading_time) as avg_bible_reading,
-    AVG(prayer_time) as avg_prayer,
-    MIN(date) as first_report,
-    MAX(date) as last_report
-  FROM reports
-  WHERE user_id = p_user_id 
-    AND date BETWEEN p_start_date AND p_end_date;
-END$$
-
-DELIMITER ;
+-- Note: Stored procedures (sp_get_system_stats, sp_get_user_reports_stats) removed.
+-- They required SUPER privilege (DEFINER) and referenced non-existent columns.
+-- Analytics are handled by the application layer.
 
 -- --------------------------------------------------------
 
@@ -143,6 +110,20 @@ INSERT INTO `users` (`id`, `fullname`, `email`, `password`, `role`, `country`, `
 (1, 'System Administrator', 'admin@ministry.com', '$2b$10$8K1p/a0dL22N/y/xnnTNwO7B2vHY1aXHkPvPsFG0PRE7.A4XHLPiu', 'admin', 'Default Country', '+1234567890', 'Admin Address', NULL, NULL, NULL, '2026-02-03 15:18:19', '2026-02-03 15:18:19'),
 (2, 'Fred Tuyishime', 'fred@gmail.com', '$2b$10$az/3O.pTfbAFRVx3c74sXevnkuctZ02wtxgN0JCUlu8yD/fKc00AO', 'member', 'Rwanda', '0787879364', 'Kicukiro Kigali Rwanda', NULL, NULL, NULL, '2026-02-28 11:21:05', '2026-02-28 11:21:05'),
 (3, 'System Administrator', 'admin@system.com', '$2b$10$a/EeTV4ai2.hTrFCZiyBHOdxLSnbmH59942UKgbntXy0vMfKI8OhC', 'admin', 'Global', '0000000000', 'System Admin', 'uploads/1772303392113-profile.png', NULL, NULL, '2026-02-28 18:13:18', '2026-02-28 18:29:52');
+
+-- --------------------------------------------------------
+--
+-- Table structure for table `ReportFormTemplate`
+--
+CREATE TABLE IF NOT EXISTS `ReportFormTemplate` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `definition` json NOT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 0,
+  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 

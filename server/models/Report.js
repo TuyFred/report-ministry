@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const { sequelize } = require('../config/db');
+const { sequelize, tableNames } = require('../config/db');
 const User = require('./User');
 
 const Report = sequelize.define('reports', {
@@ -103,6 +103,7 @@ const Report = sequelize.define('reports', {
         type: DataTypes.TEXT
     }
 }, {
+    tableName: tableNames.reports,
     timestamps: true
 });
 

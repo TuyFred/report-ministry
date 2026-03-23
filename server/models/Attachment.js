@@ -1,24 +1,25 @@
 const { DataTypes } = require('sequelize');
-const { sequelize } = require('../config/db');
+const { sequelize, tableNames } = require('../config/db');
 const Report = require('./Report');
 
+const isPostgres = !!(process.env.DATABASE_URL);
 const Attachment = sequelize.define('attachments', {
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true
     },
-    // Map model attributes to existing DB column names
     file_url: {
         type: DataTypes.STRING,
         allowNull: false,
-        field: 'url'
+        field: isPostgres ? 'file_url' : 'url'
     },
     file_type: {
         type: DataTypes.STRING,
-        field: 'mime_type'
+        field: isPostgres ? 'file_type' : 'mime_type'
     }
 }, {
+    tableName: tableNames.attachments,
     timestamps: true
 });
 

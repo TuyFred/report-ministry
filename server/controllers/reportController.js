@@ -1,7 +1,10 @@
 const Report = require('../models/Report');
 const Attachment = require('../models/Attachment');
 const User = require('../models/User');
+const { sequelize } = require('../config/db');
 const { Op, fn, col, literal } = require('sequelize');
+// Op.iLike is Postgres-only; MySQL uses Op.like (case-insensitive with utf8 collation)
+const likeOp = sequelize.getDialect() === 'postgres' ? Op.iLike : Op.like;
 const PDFDocument = require('pdfkit');
 const ExcelJS = require('exceljs');
 
@@ -130,8 +133,8 @@ exports.getReports = async (req, res) => {
         if (searchQuery) {
             userWhereClause = {
                 [Op.or]: [
-                    { fullname: { [Op.iLike]: `%${searchQuery}%` } },
-                    { contact: { [Op.iLike]: `%${searchQuery}%` } }
+                    { fullname: { [likeOp]: `%${searchQuery}%` } },
+                    { contact: { [likeOp]: `%${searchQuery}%` } }
                 ]
             };
         }
@@ -191,7 +194,8 @@ exports.getReports = async (req, res) => {
 
         res.json(reports);
     } catch (err) {
-        console.error(err.message);
+        console.error('getReports error:', err.message);
+        if (process.env.NODE_ENV !== 'production') console.error(err.stack);
         res.status(500).send('Server Error');
     }
 };
@@ -335,8 +339,8 @@ exports.exportPDF = async (req, res) => {
         if (searchQuery) {
             userWhereClause = {
                 [Op.or]: [
-                    { fullname: { [Op.iLike]: `%${searchQuery}%` } },
-                    { contact: { [Op.iLike]: `%${searchQuery}%` } }
+                    { fullname: { [likeOp]: `%${searchQuery}%` } },
+                    { contact: { [likeOp]: `%${searchQuery}%` } }
                 ]
             };
         }
@@ -564,8 +568,8 @@ exports.exportExcel = async (req, res) => {
         if (searchQuery) {
             userWhereClause = {
                 [Op.or]: [
-                    { fullname: { [Op.iLike]: `%${searchQuery}%` } },
-                    { contact: { [Op.iLike]: `%${searchQuery}%` } }
+                    { fullname: { [likeOp]: `%${searchQuery}%` } },
+                    { contact: { [likeOp]: `%${searchQuery}%` } }
                 ]
             };
         }
